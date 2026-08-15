@@ -94,7 +94,7 @@ function Bubble({
       <p
         className={cn(
           "mt-3 font-display text-xl font-bold tracking-tight tabular-nums sm:text-2xl",
-          tone === "positive" && "text-primary",
+          tone === "positive" && "text-success",
           tone === "negative" && "text-destructive",
         )}
       >
@@ -122,7 +122,7 @@ function Indicator({
       <p
         className={cn(
           "mt-1 whitespace-nowrap font-display text-xs font-semibold tabular-nums sm:text-base",
-          tone === "positive" && "text-primary",
+          tone === "positive" && "text-success",
           tone === "negative" && "text-destructive",
         )}
       >
@@ -424,15 +424,15 @@ export function Dashboard() {
         <div className="flex min-w-0 items-center gap-3">
           <img
             src="/favicon.png"
-            alt="Brasão da Família Heinz"
+            alt="Logo Patricia Heinz Nail Designer"
             className="size-11 shrink-0 rounded-2xl object-cover ring-1 ring-primary/30"
           />
           <div className="min-w-0">
             <h1 className="truncate font-display text-lg font-bold tracking-tight">
-              Família Heinz
+              Patricia Heinz
             </h1>
             <p className="truncate text-xs text-muted-foreground">
-              Controle financeiro • Tradição e amor
+              Nail Designer • Controle financeiro
             </p>
           </div>
         </div>
@@ -479,7 +479,7 @@ export function Dashboard() {
         >
           <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
             <span>
-              Entradas <b className="text-primary tabular-nums">{formatCents(totals.income)}</b>
+              Entradas <b className="text-success tabular-nums">{formatCents(totals.income)}</b>
             </span>
             <span>
               Saídas <b className="text-destructive tabular-nums">{formatCents(totals.outcome)}</b>

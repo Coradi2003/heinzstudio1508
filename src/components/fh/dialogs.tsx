@@ -1046,7 +1046,7 @@ function DetailSummary({
       <p
         className={cn(
           "mt-1 whitespace-nowrap font-display text-xs font-bold tabular-nums sm:text-base",
-          tone === "positive" && "text-primary",
+          tone === "positive" && "text-success",
           tone === "negative" && "text-destructive",
         )}
       >
@@ -1059,7 +1059,7 @@ function DetailSummary({
 function DetailStatus({ status }: { status: "Pago" | "Parcial" | "Em aberto" }) {
   const styles =
     status === "Pago"
-      ? "bg-primary/15 text-primary"
+      ? "bg-success/15 text-success"
       : status === "Parcial"
         ? "bg-warning/15 text-warning"
         : "bg-destructive/15 text-destructive";

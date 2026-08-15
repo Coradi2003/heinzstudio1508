@@ -1,13 +1,13 @@
 {
-  "name": "Família Heinz — Controle Financeiro",
-  "short_name": "Família Heinz",
-  "description": "Controle financeiro da Família Heinz: saldo, reserva, despesas e relatórios.",
+  "name": "Patricia Heinz — Nail Designer",
+  "short_name": "Patricia Heinz",
+  "description": "Controle financeiro do studio Patricia Heinz Nail Designer.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0f1a15",
-  "theme_color": "#0f1a15",
+  "background_color": "#281820",
+  "theme_color": "#281820",
   "lang": "pt-BR",
   "icons": [
     { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png" },

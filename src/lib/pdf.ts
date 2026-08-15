@@ -10,7 +10,7 @@ function header(doc: jsPDF, title: string, subtitle: string) {
   doc.rect(0, 0, doc.internal.pageSize.getWidth(), 90, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(20);
-  doc.text("Família Heinz", 40, 40);
+  doc.text("Patricia Heinz — Nail Designer", 40, 40);
   doc.setFontSize(12);
   doc.setTextColor(120, 220, 170);
   doc.text(title, 40, 60);

@@ -57,11 +57,11 @@ function LoginScreen() {
         <div className="flex items-center gap-3">
           <img
             src="/favicon.png"
-            alt="Família Heinz"
+            alt="Patricia Heinz Nail Designer"
             className="size-12 rounded-2xl object-cover ring-1 ring-primary/30"
           />
           <div>
-            <h1 className="font-display text-xl font-bold">Família Heinz</h1>
+            <h1 className="font-display text-xl font-bold">Patricia Heinz</h1>
             <p className="text-sm text-muted-foreground">Acesso ao controle financeiro</p>
           </div>
         </div>

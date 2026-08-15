@@ -80,7 +80,7 @@ export function InstallPrompt() {
             <Smartphone className="size-5" />
           </span>
           <div className="min-w-0 flex-1">
-            <p className="font-display text-base font-bold">Instale o Família Heinz</p>
+            <p className="font-display text-base font-bold">Instale o Patricia Heinz</p>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
               Acesse suas finanças rapidamente direto pela tela inicial do celular.
             </p>

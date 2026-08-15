@@ -83,15 +83,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         name: "viewport",
         content: "width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=5",
       },
-      { title: "Família Heinz — Controle Financeiro" },
+      { title: "Patricia Heinz — Nail Designer" },
       {
         name: "description",
         content:
-          "Controle financeiro da Família Heinz: saldo, reserva, despesas e relatórios em PDF.",
+          "Controle financeiro do studio Patricia Heinz Nail Designer: saldo, reserva, despesas e relatórios em PDF.",
       },
-      { name: "theme-color", content: "#0f1a15" },
+      { name: "theme-color", content: "#281820" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
-      { name: "apple-mobile-web-app-title", content: "Família Heinz" },
+      { name: "apple-mobile-web-app-title", content: "Patricia Heinz" },
       {
         name: "apple-mobile-web-app-status-bar-style",
         content: "black-translucent",

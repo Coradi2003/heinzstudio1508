@@ -6,13 +6,13 @@ import { AuthProvider, useAuth } from "@/lib/auth";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Família Heinz — Controle Financeiro" },
+      { title: "Patricia Heinz — Nail Designer" },
       {
         name: "description",
         content:
-          "App financeiro da Família Heinz: saldo, entradas, saídas, reserva, despesas parceladas e relatórios em PDF para empresa e pessoal.",
+          "App financeiro do studio Patricia Heinz Nail Designer: saldo, entradas, saídas, reserva, despesas parceladas e relatórios em PDF.",
       },
-      { property: "og:title", content: "Família Heinz — Controle Financeiro" },
+      { property: "og:title", content: "Patricia Heinz — Nail Designer" },
       {
         property: "og:description",
         content:
