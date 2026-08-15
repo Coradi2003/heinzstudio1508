@@ -89,12 +89,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "Controle financeiro do studio Patricia Heinz Nail Designer: saldo, reserva, despesas e relatórios em PDF.",
       },
-      { name: "theme-color", content: "#281820" },
+      { name: "theme-color", content: "#ffffff" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-title", content: "Patricia Heinz" },
       {
         name: "apple-mobile-web-app-status-bar-style",
-        content: "black-translucent",
+        content: "default",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
