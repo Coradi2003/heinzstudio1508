@@ -35,6 +35,7 @@ export interface NewIncomeInput {
 
 interface StoreValue {
   ready: boolean;
+  canEdit: boolean;
   entries: Entry[];
   categories: Category[];
   reserve: number;
@@ -54,7 +55,7 @@ interface StoreValue {
 
 const StoreContext = createContext<StoreValue | null>(null);
 
-export function StoreProvider({ children }: { children: ReactNode }) {
+export function StoreProvider({ children, canEdit }: { children: ReactNode; canEdit: boolean }) {
   const [ready, setReady] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
@@ -81,18 +82,18 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !canEdit) return;
     const snapshot = entries;
     entriesSaveQueue.current = entriesSaveQueue.current
       .catch(() => undefined)
       .then(() => supabaseRepository.saveEntries(snapshot));
-  }, [entries, ready]);
+  }, [entries, ready, canEdit]);
   useEffect(() => {
-    if (ready) void supabaseRepository.saveCategories(categories);
-  }, [categories, ready]);
+    if (ready && canEdit) void supabaseRepository.saveCategories(categories);
+  }, [categories, ready, canEdit]);
   useEffect(() => {
-    if (ready) void supabaseRepository.saveMeta({ reserve });
-  }, [reserve, ready]);
+    if (ready && canEdit) void supabaseRepository.saveMeta({ reserve });
+  }, [reserve, ready, canEdit]);
 
   const addExpense = useCallback((input: NewExpenseInput) => {
     const now = new Date().toISOString();
@@ -183,9 +184,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateEntry = useCallback((id: string, patch: Partial<Entry>) => {
-    setEntries((prev) =>
-      prev.map((e) => (e.id === id ? { ...e, ...patch, id: e.id } : e)),
-    );
+    setEntries((prev) => prev.map((e) => (e.id === id ? { ...e, ...patch, id: e.id } : e)));
   }, []);
 
   const deleteEntry = useCallback((id: string) => {
@@ -199,17 +198,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
 
   const payPartial = useCallback((id: string, value: number) => {
     setEntries((prev) =>
-      prev.map((e) =>
-        e.id === id ? { ...e, paid: Math.min(e.amount, e.paid + value) } : e,
-      ),
+      prev.map((e) => (e.id === id ? { ...e, paid: Math.min(e.amount, e.paid + value) } : e)),
     );
   }, []);
 
   const payFull = useCallback((ids: string[]) => {
     const set_ = new Set(ids);
-    setEntries((prev) =>
-      prev.map((e) => (set_.has(e.id) ? { ...e, paid: e.amount } : e)),
-    );
+    setEntries((prev) => prev.map((e) => (set_.has(e.id) ? { ...e, paid: e.amount } : e)));
   }, []);
 
   const addCategory = useCallback((name: string, icon?: string) => {
@@ -225,9 +220,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const updateCategory = useCallback((id: string, patch: Partial<Category>) => {
-    setCategories((prev) =>
-      prev.map((c) => (c.id === id ? { ...c, ...patch, id: c.id } : c)),
-    );
+    setCategories((prev) => prev.map((c) => (c.id === id ? { ...c, ...patch, id: c.id } : c)));
   }, []);
 
   const deleteCategory = useCallback((id: string) => {
@@ -239,43 +232,41 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     setReserve((prev) => prev + value);
   }, []);
 
-  const reserveWithdraw = useCallback(
-    (value: number, destination: string, scope: Scope) => {
-      setReserve((prev) => Math.max(0, prev - value));
-      const catId = "cat-reserva";
-      setCategories((prev) =>
-        prev.some((c) => c.id === catId)
-          ? prev
-          : [...prev, { id: catId, name: "Reserva", color: "#22d3ee", icon: "PiggyBank" }],
-      );
-      setEntries((prev) => [
-        ...prev,
-        {
-          id: uid(),
-          type: "expense",
-          scope,
-          categoryId: catId,
-          description: destination,
-          amount: value,
-          paid: value,
-          date: new Date().toISOString().slice(0, 10),
-          fixed: false,
-          installmentIndex: null,
-          installmentCount: null,
-          totalAmount: null,
-          groupId: null,
-          fromReserve: true,
-          paidUpfront: false,
-          createdAt: new Date().toISOString(),
-        },
-      ]);
-    },
-    [],
-  );
+  const reserveWithdraw = useCallback((value: number, destination: string, scope: Scope) => {
+    setReserve((prev) => Math.max(0, prev - value));
+    const catId = "cat-reserva";
+    setCategories((prev) =>
+      prev.some((c) => c.id === catId)
+        ? prev
+        : [...prev, { id: catId, name: "Reserva", color: "#22d3ee", icon: "PiggyBank" }],
+    );
+    setEntries((prev) => [
+      ...prev,
+      {
+        id: uid(),
+        type: "expense",
+        scope,
+        categoryId: catId,
+        description: destination,
+        amount: value,
+        paid: value,
+        date: new Date().toISOString().slice(0, 10),
+        fixed: false,
+        installmentIndex: null,
+        installmentCount: null,
+        totalAmount: null,
+        groupId: null,
+        fromReserve: true,
+        paidUpfront: false,
+        createdAt: new Date().toISOString(),
+      },
+    ]);
+  }, []);
 
   const value = useMemo<StoreValue>(
     () => ({
       ready,
+      canEdit,
       entries,
       categories,
       reserve,
@@ -294,6 +285,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     }),
     [
       ready,
+      canEdit,
       entries,
       categories,
       reserve,

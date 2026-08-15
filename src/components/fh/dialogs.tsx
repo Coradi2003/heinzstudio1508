@@ -791,17 +791,18 @@ export function DetailDialog({
     }
   }
 
-  const EditButton = ({ entry }: { entry: Entry }) => (
-    <button
-      type="button"
-      onClick={() => onEdit?.(entry)}
-      aria-label="Editar lançamento"
-      title="Editar lançamento"
-      className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
-    >
-      <Pencil className="size-4" />
-    </button>
-  );
+  const EditButton = ({ entry }: { entry: Entry }) =>
+    onEdit ? (
+      <button
+        type="button"
+        onClick={() => onEdit?.(entry)}
+        aria-label="Editar lançamento"
+        title="Editar lançamento"
+        className="grid size-8 shrink-0 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-secondary hover:text-primary"
+      >
+        <Pencil className="size-4" />
+      </button>
+    ) : null;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

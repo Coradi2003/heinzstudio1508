@@ -9,6 +9,8 @@ import {
   ChevronLeft,
   ChevronRight,
   FileText,
+  Eye,
+  LogOut,
   Minus,
   PiggyBank,
   Plus,
@@ -55,6 +57,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { useAuth } from "@/lib/auth";
 
 type StatusFilter = "pago" | "apagar";
 
@@ -229,6 +232,7 @@ function RowMenu({ trigger, content }: { trigger: ReactNode; content: ReactNode 
 export function Dashboard() {
   const store = useStore();
   const { entries, categories, reserve } = store;
+  const { canEdit, role, signOut, user } = useAuth();
 
   const now = new Date();
   const [month, setMonth] = useState(
@@ -396,18 +400,20 @@ export function Dashboard() {
           />
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <Button className="h-11 rounded-2xl" onClick={() => openScopeDialog("income", scope)}>
-            <ArrowUpRight className="size-4" /> Renda
-          </Button>
-          <Button
-            variant="destructive"
-            className="h-11 rounded-2xl"
-            onClick={() => openScopeDialog("expense", scope)}
-          >
-            <ArrowDownRight className="size-4" /> Despesa
-          </Button>
-        </div>
+        {canEdit && (
+          <div className="mt-4 grid grid-cols-2 gap-2">
+            <Button className="h-11 rounded-2xl" onClick={() => openScopeDialog("income", scope)}>
+              <ArrowUpRight className="size-4" /> Renda
+            </Button>
+            <Button
+              variant="destructive"
+              className="h-11 rounded-2xl"
+              onClick={() => openScopeDialog("expense", scope)}
+            >
+              <ArrowDownRight className="size-4" /> Despesa
+            </Button>
+          </div>
+        )}
       </section>
     );
   };
@@ -430,16 +436,37 @@ export function Dashboard() {
             </p>
           </div>
         </div>
-        <Button
-          variant="secondary"
-          size="sm"
-          className="shrink-0 rounded-xl"
-          onClick={() => setDialog("categories")}
-        >
-          <Tags className="size-4" />
-          <span className="hidden sm:inline">Categorias</span>
-        </Button>
+        <div className="flex items-center gap-2">
+          {canEdit && (
+            <Button
+              variant="secondary"
+              size="sm"
+              className="shrink-0 rounded-xl"
+              onClick={() => setDialog("categories")}
+            >
+              <Tags className="size-4" />
+              <span className="hidden sm:inline">Categorias</span>
+            </Button>
+          )}
+          <Button
+            variant="ghost"
+            size="icon"
+            className="size-9 shrink-0 rounded-xl"
+            onClick={() => void signOut()}
+            title={`Sair de ${user.email ?? "conta"}`}
+            aria-label="Sair"
+          >
+            <LogOut className="size-4" />
+          </Button>
+        </div>
       </header>
+
+      {!canEdit && (
+        <div className="mt-4 flex items-center gap-2 rounded-2xl border border-primary/25 bg-primary/10 px-4 py-3 text-sm text-primary">
+          <Eye className="size-4 shrink-0" />
+          <span>Modo de visualização — esta conta não pode alterar os dados.</span>
+        </div>
+      )}
 
       {/* Bolhas */}
       <section className="mt-5 grid grid-cols-2 gap-3">
@@ -473,23 +500,25 @@ export function Dashboard() {
           value={formatCents(reserve)}
           icon={<PiggyBank className="size-4" />}
         >
-          <div className="mt-3 flex gap-2">
-            <Button
-              size="sm"
-              className="h-10 flex-1 rounded-2xl"
-              onClick={() => setDialog("reserve-in")}
-            >
-              <Plus className="size-4" /> Adicionar
-            </Button>
-            <Button
-              size="sm"
-              variant="destructive"
-              className="h-10 flex-1 rounded-2xl"
-              onClick={() => setDialog("reserve-out")}
-            >
-              <Minus className="size-4" /> Retirar
-            </Button>
-          </div>
+          {canEdit && (
+            <div className="mt-3 flex gap-2">
+              <Button
+                size="sm"
+                className="h-10 flex-1 rounded-2xl"
+                onClick={() => setDialog("reserve-in")}
+              >
+                <Plus className="size-4" /> Adicionar
+              </Button>
+              <Button
+                size="sm"
+                variant="destructive"
+                className="h-10 flex-1 rounded-2xl"
+                onClick={() => setDialog("reserve-out")}
+              >
+                <Minus className="size-4" /> Retirar
+              </Button>
+            </div>
+          )}
         </Bubble>
       </CollapsibleSection>
 
@@ -664,39 +693,45 @@ export function Dashboard() {
                   <>
                     <DropdownMenuLabel>{catName(g.categoryId)}</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        setActiveEntry(g.pending[0] ?? g.entries[0] ?? null);
-                        setDialog("edit");
-                      }}
-                    >
-                      Editar
-                    </DropdownMenuItem>
+                    {canEdit && (
+                      <DropdownMenuItem
+                        onSelect={() => {
+                          setActiveEntry(g.pending[0] ?? g.entries[0] ?? null);
+                          setDialog("edit");
+                        }}
+                      >
+                        Editar
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem onSelect={() => openDetail()}>Detalhar</DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        const target = g.pending[0];
-                        if (!target) {
-                          toast.info("Não há parcelas em aberto");
-                          return;
-                        }
-                        setActiveEntry(target);
-                        setDialog("partial");
-                      }}
-                    >
-                      Pagamento parcial
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                      onSelect={() => {
-                        if (g.pending.length === 0) {
-                          toast.info("Tudo já está pago");
-                          return;
-                        }
-                        setConfirmPay(g.pending);
-                      }}
-                    >
-                      Pagamento total
-                    </DropdownMenuItem>
+                    {canEdit && (
+                      <>
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            const target = g.pending[0];
+                            if (!target) {
+                              toast.info("Não há parcelas em aberto");
+                              return;
+                            }
+                            setActiveEntry(target);
+                            setDialog("partial");
+                          }}
+                        >
+                          Pagamento parcial
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onSelect={() => {
+                            if (g.pending.length === 0) {
+                              toast.info("Tudo já está pago");
+                              return;
+                            }
+                            setConfirmPay(g.pending);
+                          }}
+                        >
+                          Pagamento total
+                        </DropdownMenuItem>
+                      </>
+                    )}
                   </>
                 }
               />
@@ -778,10 +813,14 @@ export function Dashboard() {
         category={detailGroup?.category ?? null}
         scope={detailGroup?.scope ?? "empresa"}
         entries={detailGroup?.entries ?? []}
-        onEdit={(entry) => {
-          setActiveEntry(entry);
-          setDialog("edit");
-        }}
+        onEdit={
+          canEdit
+            ? (entry) => {
+                setActiveEntry(entry);
+                setDialog("edit");
+              }
+            : undefined
+        }
       />
       <AlertDialog
         open={Boolean(confirmPay) || payDone}
@@ -826,7 +865,8 @@ export function Dashboard() {
       </AlertDialog>
 
       <footer className="mt-10 text-center text-xs text-muted-foreground">
-        Dados sincronizados com a nuvem • {monthKey(new Date().toISOString())}
+        Dados sincronizados com a nuvem • {role === "admin" ? "Administrador" : "Visualização"} •{" "}
+        {monthKey(new Date().toISOString())}
       </footer>
     </main>
   );

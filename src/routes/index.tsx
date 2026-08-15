@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { StoreProvider } from "@/lib/store";
 import { Dashboard } from "@/components/fh/Dashboard";
+import { AuthProvider, useAuth } from "@/lib/auth";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,7 +27,16 @@ export const Route = createFileRoute("/")({
 
 function Index() {
   return (
-    <StoreProvider>
+    <AuthProvider>
+      <AuthenticatedApp />
+    </AuthProvider>
+  );
+}
+
+function AuthenticatedApp() {
+  const { canEdit } = useAuth();
+  return (
+    <StoreProvider canEdit={canEdit}>
       <Dashboard />
     </StoreProvider>
   );
